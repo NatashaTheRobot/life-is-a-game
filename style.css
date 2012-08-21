@@ -9,9 +9,9 @@ h1{
 
 .span1 {
 	text-align: center;
-/*	border-bottom: 1px solid;*/
 	margin: 0px;
 	padding: 30px;
+	font-size: 20px;
 }
 
 #cell1, #cell2, #cell4, #cell5 {
