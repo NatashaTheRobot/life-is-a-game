@@ -14,16 +14,16 @@ h1{
 	font-size: 20px;
 }
 
-#cell02, #cell12, #cell01, #cell11 {
+#cell1, #cell2, #cell4, #cell5 {
 	border-bottom: 1px solid;
 	border-right: 1px solid;
 }
 
-#cell22, #cell21 {
+#cell3, #cell6 {
 	border-bottom: 1px solid;
 }
 
-#cell00, #cell10 {
+#cell7, #cell8 {
 	border-right: 1px solid;
 }
 
