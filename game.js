@@ -84,15 +84,21 @@ $(function(){
 		return checkBoards(rows) || checkBoards(columns) || checkBoards(diagonals);
 	}
 	
+	function makeMove() {
+		//check for blocking
+		//find best solution
+	}
+	
 	//plays the next move
 	function play(cell) {
 		$(cell).html("X");
 		$(cell).off('click');
 		addCellToBoards(cell);
 		if(!checkForWinner()) {
-			//makeMove(); - blocking or best possible spot
+			makeMove();
 		} else {
-			alert('someone has won!!!')
+			var winText = "<div class='alert alert-success'>we have a winner!!!!!</div>"
+			$(winText).prependTo('.board')
 			//add jquery to add text for winner
 		}
 	}
