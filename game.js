@@ -12,7 +12,7 @@ $(function(){
 		return parseInt(regex.exec(word))
 	}
 	
-	//checks if the cell is in the diagonals
+	//checks if the cell is in one of the diagonals
 	function diagonalPossible(x, y) {
 		if((x === 0 && y == 1) || (x === 1 && y === 2) || (x === 1 && y === 0) || (x === 2 && y === 1)){
 			return false;
@@ -31,8 +31,10 @@ $(function(){
 		cells.cellName = {id: id, x: x, y: y, content: OPPONENT};
 		var rowName = 'row' + y;
 		rows[rowName][cellName] = cells.cellName;
+		//rows[rowName].count === undefined ? rows[rowName].count = 1 : rows[rowName].count ++;
 		var columnName = 'column' + x;
 		columns[columnName][cellName] = cells.cellName;
+		//columns[columnName].count === undefined ? columns[columnName].count = 1 : columns[columnName].count ++;
 		if(diagonalPossible(x, y)) {
 			if(x == 1 && y == 1){
 				diagonals['diagonal1'][cellName] = cells.cellName;
@@ -44,10 +46,40 @@ $(function(){
 			}
 		}
 	}
-
+	
+	function countCells(obj) {
+		var count = 0;
+		for(keys in obj) {
+			count ++;
+		}
+		return count;
+	}
+	
+	function checkCellMatch(row){
+		var contents = [];
+		for(cell in rows[row]) {
+			contents.push(rows[row][cell].content);
+		}
+		return contents[0] === contents[1] && contents[1] === contents[2];
+	}
+	
+	function checkRows() {
+		for(row in rows) {
+			if(!rows[row].hasOwnProperty('winner')){
+				if(countCells(rows[row]) === 3){
+					if(checkCellMatch(row)) {
+						return true;
+					} else {
+						rows[row].winner = false;
+					}
+				}
+			}
+		}
+		return false;
+	}
 	
 	function checkForWinner(){
-		//checkRows();
+		return checkRows();
 		//if there is no winner returns false
 		//if there is a winner returns true
 	}
@@ -58,8 +90,9 @@ $(function(){
 		$(cell).off('click');
 		addCellToBoards(cell);
 		if(!checkForWinner()) {
-			//makeMove();
+			//makeMove(); - blocking or best possible spot
 		} else {
+			alert('someone has won!!!')
 			//add jquery to add text for winner
 		}
 	}
