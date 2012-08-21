@@ -1,41 +1,47 @@
 $(function(){
+	
+	var plays = new Array(9)
+	
+	//returns the index of the cell
+	function findIndex(indexName) {
+		var regex = new RegExp(/\d/)
+		return regex.exec(indexName)[0]
+	}
+	
+	function play(cellid) {
+		$(cellid).off('click');
+		var cellIndex = findIndex($(cellid).attr('name'));
+		plays[cellIndex] = 'x';
+		console.log(plays);
+	}
 
 	//add event handlers for each cell
 	$('#cell02').on('click', function(){
-		alert('0,2');
-		$('#cell02').off('click');
+		play('#cell02')
 	});
 	$('#cell12').on('click', function(){
-		alert('1,2');
-		$('#cell12').off('click');
+		play('#cell12')
 	});
 	$('#cell22').on('click', function(){
-		alert('2,2');
-		$('#cell22').off('click');
+		play('#cell22')
 	});
 	$('#cell01').on('click', function(){
-		alert('0,1');
-		$('#cell01').off('click');
+		play('#cell01')
 	});
 	$('#cell11').on('click', function(){
-		alert('1,1');
-		$('#cell11').off('click');
+		play('#cell11')
 	});
 	$('#cell21').on('click', function(){
-		alert('2,1');
-		$('#cell21').off('click');
+		play('#cell21')
 	});
 	$('#cell00').on('click', function(){
-		alert('0,0');
-		$('#cell00').off('click');
+		play('#cell00');
 	});
 	$('#cell10').on('click', function(){
-		alert('1,0');
-		$('#cell10').off('click');
+		play('#cell10');
 	});
 	$('#cell20').on('click', function(){
-		alert('2,0');
-		$('#cell20').off('click');
+		play('#cell20');
 	});
 	
 
