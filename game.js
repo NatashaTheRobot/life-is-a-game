@@ -55,22 +55,24 @@ $(function(){
 		return count;
 	}
 	
-	function checkCellMatch(row){
+	function checkCellMatch(element){
 		var contents = [];
-		for(cell in rows[row]) {
-			contents.push(rows[row][cell].content);
+		var elements = element + 's'
+		for(cell in elements[element]) {
+			contents.push(elements[element][cell].content);
 		}
 		return contents[0] === contents[1] && contents[1] === contents[2];
 	}
 	
-	function checkRows() {
-		for(row in rows) {
-			if(!rows[row].hasOwnProperty('winner')){
-				if(countCells(rows[row]) === 3){
-					if(checkCellMatch(row)) {
+	//checks rows, columns, or diagonals for 3 in a row wins
+	function checkBoards(elements) {
+		for(element in elements) {
+			if(!elements[element].hasOwnProperty('winner')){
+				if(countCells(elements[element]) === 3){
+					if(checkCellMatch(element)) {
 						return true;
 					} else {
-						rows[row].winner = false;
+						elements[element].winner = false;
 					}
 				}
 			}
@@ -79,9 +81,7 @@ $(function(){
 	}
 	
 	function checkForWinner(){
-		return checkRows();
-		//if there is no winner returns false
-		//if there is a winner returns true
+		return checkBoards(rows) || checkBoards(columns) || checkBoards(diagonals);
 	}
 	
 	//plays the next move
