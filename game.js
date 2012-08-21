@@ -2,17 +2,25 @@ $(function(){
 	
 	var plays = new Array(9)
 	
-	//returns the index of the cell
-	function findIndex(indexName) {
+	//returns the numeric index of the cell
+	function findIndex(indexString) {
 		var regex = new RegExp(/\d/)
-		return regex.exec(indexName)[0]
+		return regex.exec(indexString)[0]
 	}
 	
+	function counterMove() {
+		//checks for 2 Self moves in a row for a winning move
+		//checks for 2 Opponent moves in a row for a blocking move
+		//checks for a path of most wins and adds self move
+	}
+	
+	//plays the next move
 	function play(cellid) {
 		$(cellid).off('click');
 		var cellIndex = findIndex($(cellid).attr('name'));
-		plays[cellIndex] = 'x';
-		console.log(plays);
+		plays[cellIndex] = 'opponent';
+		console.log(plays)
+		counterMove();
 	}
 
 	//add event handlers for each cell
