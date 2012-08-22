@@ -99,7 +99,7 @@ $(function(){
 		} else {
 			var winText = "<div class='alert alert-success'>we have a winner!!!!!</div>"
 			$(winText).prependTo('.board')
-			//add jquery to add text for winner
+			$('.span1').off('click');
 		}
 	}
 

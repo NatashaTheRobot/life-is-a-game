@@ -12,6 +12,8 @@ h1{
 	margin: 0px;
 	padding: 30px;
 	font-size: 20px;
+	width: 75px;
+	height: 75px;
 }
 
 #cell1, #cell2, #cell4, #cell5 {
