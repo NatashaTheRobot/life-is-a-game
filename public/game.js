@@ -121,13 +121,7 @@ $(function(){
 		}
 	}
 	
-	
-	//adding the block move to the board
-	function makeBlockMove(blockSection) {
-		var cells = []
-		for(var cell in blockSection) {
-			cells.push(blockSection[cell]);
-		}
+	function addLastSectionCell(cells) {
 		//same column
 		if(cells[0].x === cells[1].x){
 			var y;
@@ -196,6 +190,17 @@ $(function(){
 			$(coordinates).off('click');
 			addCellToBoardsFromCoordinates(x,y);
 		}
+		
+	}
+	
+	
+	//adding the block move to the board
+	function makeBlockMove(blockSection) {
+		var cells = []
+		for(var cell in blockSection) {
+			cells.push(blockSection[cell]);
+		}
+		addLastSectionCell(cells);
 	}
 	
 	//future feture: if computer goes first
@@ -234,88 +239,21 @@ $(function(){
 			for(var cell in winSection) {
 				cells.push(winSection[cell]);
 			}
-			//same column
-			if(cells[0].x === cells[1].x){
-				var y;
-				var sumYs = cells[0].y + cells[1].y
-				if(sumYs === 3) {
-					y = 0;
-				} else if(sumYs === 2) {
-					y = 1;
-				} else {
-					y = 2;
-				}
-				var coordinates = '#x' + cells[0].x + '-y' + y;
-				$(coordinates).html('o');
-				$(coordinates).off('click');
-				addCellToBoardsFromCoordinates(cells[0].x,y);
-
-			} else if(cells[0].y === cells[1].y) { //same row
-				var x;
-				var sumXs = cells[0].x + cells[1].x
-				if(sumXs === 3) {
-					x = 0;
-				} else if(sumXs === 2) {
-					x = 1;
-				} else {
-					x = 2;
-				}
-				var coordinates = '#x' + x + '-y' + cells[0].y;
-				$(coordinates).html('o');
-				$(coordinates).off('click');
-				addCellToBoardsFromCoordinates(x,cells[0].y);
-
-			} else { //same diagonal
-				var x, y; 
-				if((cells[0].x === 0 && cells[0].y === 0) || 
-					 (cells[1].x === 2 && cells[1].y === 2) ||
-					 (cells[1].x === 0 && cells[1].y === 0) ||
-					 (cells[0].x === 2 && cells[0].y === 2)
-					) {
-					var sum = cells[0].x + cells[0].y + cells[1].x + cells[1].y;
-					if(sum === 6) {
-						x = 0;
-						y = 0;
-					} else if(sum === 4) {
-						x = 1;
-						y = 1;
-					} else {
-						x = 2;
-						y = 2;
-					}
-				} else {
-					var sumXs = cells[0].x + cells[1].x;
-					var sumYs = cells[0].y + cells[1].y;
-					if(sumXs === 3 && sumYs === 1) {
-						x = 0;
-						y = 2;
-					} else if(sumXs === 1 && sumYs === 3) {
-						x = 2;
-						y = 0;
-					} else {
-						x = 1;
-						y = 1;
-					}
-				}
-				var coordinates = '#x' + x + '-y' + y;
-				$(coordinates).html('o');
-				$(coordinates).off('click');
-				addCellToBoardsFromCoordinates(x,y);
-			}
+			addLastSectionCell(cells)
 		} else {
 			return false;
 		}
 	}
 	
 	//the best corner is one with 3 options of winning (row, column, diagonal)
-	function findBestCorner() {
-		
+	function makeBestMove() {
+		//console.log(diagonals[diagonal1])
 	}
 	
 	//the best move is one that maximizes the chance of winning
 	function makeBestMove() {
 			if(!makeWinningMove()){
-				findBestCorner();
+				//makeBestMove();
 			}
 	}
 	
