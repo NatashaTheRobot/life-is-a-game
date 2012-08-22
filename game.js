@@ -65,7 +65,7 @@ $(function(){
 	}
 	
 	//checks rows, columns, or diagonals for 3 in a row wins
-	function checkBoards(elements) {
+	function checkBoardsForWinner(elements) {
 		for(element in elements) {
 			if(!elements[element].hasOwnProperty('winner')){
 				if(countCells(elements[element]) === 3){
@@ -80,13 +80,74 @@ $(function(){
 		return false;
 	}
 	
-	function checkForWinner(){
-		return checkBoards(rows) || checkBoards(columns) || checkBoards(diagonals);
+	function isWinner(){
+		return checkBoardsForWinner(rows) || checkBoardsForWinner(columns) || checkBoardsForWinner(diagonals);
 	}
 	
+	function checkBlockMatch(element) {
+		var contents = [];
+		var elements = element + 's'
+		for(cell in elements[element]) {
+			contents.push(elements[element][cell].content);
+		}
+		return contents[0] === contents[1];
+	}
+	
+	//checks rows, columns, or diagonals for 3 in a row wins
+	function checkBoardsToBlock(elements) {
+		for(element in elements) {
+			if(!elements[element].hasOwnProperty('winner') && !elements[element].hasOwnProperty('block')){
+				if(countCells(elements[element]) === 2){
+					if(checkBlockMatch(element)) {
+						return elements[element];
+					} else {
+						elements[element].block = false;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	//adding the block move to the board
+	function makeBlockMove(blockSection) {
+		var cells = []
+		for(var cell in blockSection) {
+			cells.push(blockSection[cell])
+		}
+		console.log(cells)
+		//same column
+		if(cells[0].x === cells[1].x){
+			coordinates='x1-y2'
+			var y;
+			var sumYs = cells[0].y + cells[1].y
+			if(sumYs === 3) {
+				y = 0;
+			} else if(sumYs === 2) {
+				y = 1;
+			} else {
+				y = 2;
+			}
+			var coordinates = 'x' + cells[0].x + '-y' + y;
+			var coordinateSelector = "coordinates['" + coordinates + "']" 
+			console.log(coordinateSelector)
+			$(coordinateSelector).html('o')
+		} else if(cells[0].y === cells[1].y) { //same row
+			alert('same row')
+		} else { //same diagonal
+			alert('same diagonal')
+		}
+	}
+	
+	
 	function makeMove() {
-		//check for blocking
-		//find best solution
+		var toBlock = checkBoardsToBlock(rows) || checkBoardsToBlock(columns) || checkBoardsToBlock(diagonals);
+		if(toBlock){
+			makeBlockMove(toBlock)
+			//add O to the board at correct coordinate spot
+		} else {
+			//find best solution
+		}
 	}
 	
 	//plays the next move
@@ -94,7 +155,7 @@ $(function(){
 		$(cell).html("X");
 		$(cell).off('click');
 		addCellToBoards(cell);
-		if(!checkForWinner()) {
+		if(!isWinner()) {
 			makeMove();
 		} else {
 			var winText = "<div class='alert alert-success'>we have a winner!!!!!</div>"
