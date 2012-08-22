@@ -44,8 +44,8 @@ $(function(){
 	
 	function countCells(obj) {
 		var count = 0;
-		for(keys in obj) {
-			count ++;
+		for(key in obj) {
+			count += 1;
 		}
 		return count;
 	}
@@ -80,11 +80,10 @@ $(function(){
 	
 	function checkBlockMatch(element) {
 		var contents = [];
-		var elements = element + 's'
-		for(cell in elements[element]) {
-			contents.push(elements[element][cell].content);
+		for(cell in element) {
+			contents.push(element[cell].content);
 		}
-		return contents[0] === contents[1];
+		return contents[0] === contents[1] && contents[1] === OPPONENT;
 	}
 	
 	//checks rows, columns, or diagonals for 3 in a row wins
@@ -198,9 +197,13 @@ $(function(){
 	function makeBlockMove(blockSection) {
 		var cells = []
 		for(var cell in blockSection) {
-			cells.push(blockSection[cell]);
+			if(blockSection[cell].content === OPPONENT){
+				cells.push(blockSection[cell]);
+			}	
 		}
-		addLastSectionCell(cells);
+		if(cells.length === 2){
+			addLastSectionCell(cells);
+		}	
 	}
 	
 	//future feture: if computer goes first
@@ -252,11 +255,14 @@ $(function(){
 	}
 	
 	function cellFilled(x,y) {
-		for(cell in rows['row' + y]){
-			if(cell.x === x && cell.y === y){
+		var row = 'row' + y
+		for(cell in rows[row]){
+			var cellObj = rows[row][cell]  
+			if(cellObj.x === x && cellObj.y === y){
 				return true;
 			}
 		}
+		return false;
 	}
 	
 	//checks a row, column, or diagonal to see if existing cells are Os
@@ -301,6 +307,9 @@ $(function(){
 	
 	function checkForTwoWin(x,y,d){
 		//check if there is a value already there
+		console.log(x)
+		console.log(y)
+		console.log(cellFilled(x,y))
 		if(cellFilled(x,y)){
 			return false;
 		}
@@ -313,14 +322,15 @@ $(function(){
 			var diagonal = diagonals['diagonal' + d]
 			sectionsEmpty = (isEmpty(row) && isEmpty(column)) ||
 											(isEmpty(row) && isEmpty(diagonal)) ||
-											(isEmpth(column) && isEmpty(diagonal));
+											(isEmpty(column) && isEmpty(diagonal));
 			sectionsHaveOnlyComputerCells = (hasOnlyComputerCells(row) && hasOnlyComputerCells(column)) ||
 											                (hasOnlyComputerCells(row) && hasOnlyComputerCells(diagonal)) ||
 																			(hasOnlyComputerCells(column) && hasOnlyComputerCells(diagonal));
 		} else {
 			sectionsEmpty = isEmpty(row) && isEmpty(column);
 			sectionsHaveOnlyComputerCells = hasOnlyComputerCells(row) && hasOnlyComputerCells(column);
-		}																
+		}	
+																	
 		if(sectionsHaveOnlyComputerCells || sectionsEmpty){
 			return {x: x, y: y}
 		} else {
@@ -402,7 +412,9 @@ $(function(){
 			addCellToDom(cell);
 		} else if(cell = twoWinCell()){
 			addCellToDom(cell);
+			console.log('two win cell')
 		} else if(cell = oneWinCell()){
+			console.log('one win cell')
 			addCellToDom(cell);
 		}
 		
