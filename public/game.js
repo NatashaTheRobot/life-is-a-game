@@ -250,32 +250,55 @@ $(function(){
 		return jQuery.isEmptyObject(element)
 	}
 	
-	function checkCorner(x,y,d) {
-		//check if there is a value already there
+	function cellFilled(x,y) {
 		for(cell in rows['row' + y]){
 			if(cell.x === x && cell.y === y){
+				return true;
+			}
+		}
+	}
+	
+	//checks a row, column, or diagonal to see if existing cells are Os
+	function hasOnlyComputerCells(element){
+		for(cell in element){
+			if(element[cell].content === OPPONENT){
 				return false;
 			}
+		}
+		return true;
+	}
+	
+	function checkCornerCell(x,y,d) {
+		//check if there is a value already there
+		if(cellFilled(x,y)){
+			return false;
 		}
 		//check row, columns, diagonals for empty or computer cells
 		var row = rows['row' + y]
 		var column = columns['column' + x]
 		var diagonal = diagonals['diagonal' + d]
-		if(isEmpty(row) && isEmpty(column) && isEmpty(diagonal)){
+		var sectionsEmpty = isEmpty(row) && isEmpty(column) && isEmpty(diagonal);
+		var sectionsHaveOnlyComputerCells = hasOnlyComputerCells(column) && 
+																				hasOnlyComputerCells(row) && 
+																				hasOnlyComputerCells(diagonal);																	
+		if(sectionsEmpty || sectionsHaveOnlyComputerCells){
 			return {x: x, y: y}
-		} else { 
+		} else { //if not empty but filled with an o
 			return false;
 		}
 	}
 	
 	//the best corner is one with 3 options of winning (row, column, diagonal)
 	function findBestMove() {
-		var coordinates = checkCorner(0,2,1) || checkCorner(0,0,2) || checkCorner(2,2,2) || checkCorner(2,0,1);
-		if(coordinates){
-			var coordinateId = '#x' + coordinates.x + '-y' + coordinates.y;
+		var threeWinCell = checkCornerCell(0,2,1) || 
+											 checkCornerCell(0,0,2) || 
+											 checkCornerCell(2,2,2) || 
+											 checkCornerCell(2,0,1);
+		if(threeWinCell){
+			var coordinateId = '#x' + threeWinCell.x + '-y' + threeWinCell.y;
 			$(coordinateId).html('o');
 			$(coordinateId).off('click');
-			addCellToBoardsFromCoordinates(coordinates.x, coordinates.y);
+			addCellToBoardsFromCoordinates(threeWinCell.x, threeWinCell.y);
 		} else {
 			//find cell with 2 possible winning options - need to check cell contents for computer cell
 		}
