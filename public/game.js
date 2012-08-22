@@ -90,9 +90,7 @@ $(function(){
 			if(countCells(elements[element]) === 2){
 				if(checkBlockMatch(elements[element])) {
 					return elements[element];
-				} else {
-					return false;
-				}
+				} 
 			}
 		}
 		return false;
@@ -193,13 +191,13 @@ $(function(){
 	function makeBlockMove(blockSection) {
 		var cells = []
 		for(var cell in blockSection) {
-			if(blockSection[cell].content === OPPONENT){
+			//if(blockSection[cell].content === OPPONENT){
 				cells.push(blockSection[cell]);
-			}	
+			//}	
 		}
-		if(cells.length === 2){
+		//if(cells.length === 2){
 			addLastSectionCell(cells);
-		}	
+		//}	
 	}
 	
 	function checkForWin(element) {
@@ -484,8 +482,8 @@ $(function(){
 	}
 	
 	function makeMove() {
-		var toBlock = checkBoardsToBlock(rows) || checkBoardsToBlock(columns) || checkBoardsToBlock(diagonals);
 		if(!makeWinningMove()){
+			var toBlock = checkBoardsToBlock(rows) || checkBoardsToBlock(columns) || checkBoardsToBlock(diagonals);
 			if(toBlock){
 				makeBlockMove(toBlock);
 			}	else {
