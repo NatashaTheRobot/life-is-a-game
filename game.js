@@ -27,17 +27,17 @@ $(function(){
 		var y = numFromWord(coordinates[1]);
 		var cellObj = {x: x, y: y, content: OPPONENT};
 		var rowName = 'row' + y;
-		rows[rowName][cell + x] = cellObj;
+		rows[rowName]['cell' + x] = cellObj;
 		var columnName = 'column' + x;
-		columns[columnName][cell + y] = cellObj;
+		columns[columnName]['cell' + y] = cellObj;
 		if(diagonalPossible(x, y)) {
 			if(x == 1 && y == 1){
-				diagonals['diagonal1'][cell + x] = cellObj;
-				diagonals['diagonal2'][cell + y] = cellObj;
+				diagonals['diagonal1']['cell' + x] = cellObj;
+				diagonals['diagonal2']['cell' + y] = cellObj;
 			} else if ((x === 0 && y === 2) || (x === 2 && y === 0)) {
-				diagonals['diagonal1'][cell + x] = cellObj;
+				diagonals['diagonal1']['cell' + x + y] = cellObj;
 			} else {
-				diagonals['diagonal2'][cell + y] = cellObj;
+				diagonals['diagonal2']['cell' + x + y] = cellObj;
 			}
 		}
 	}
@@ -52,9 +52,8 @@ $(function(){
 	
 	function checkCellMatch(element){
 		var contents = [];
-		var elements = element + 's'
-		for(cell in elements[element]) {
-			contents.push(elements[element][cell].content);
+		for(cell in element) {
+			contents.push(element[cell].content);
 		}
 		return (contents[0] === contents[1]) && (contents[1] === contents[2]);
 	}
@@ -64,7 +63,7 @@ $(function(){
 		for(element in elements) {
 			if(!elements[element].hasOwnProperty('winner')){
 				if(countCells(elements[element]) === 3){
-					if(checkCellMatch(element)) {
+					if(checkCellMatch(elements[element])) {
 						return true;
 					} else {
 						elements[element].winner = false;
@@ -107,9 +106,9 @@ $(function(){
 	function addCellToBoardsFromCoordinates(x,y) {
 		var cellObj = {x: x, y: y, content: COMPUTER};
 		var rowName = 'row' + y;
-		rows[rowName]['cell' + y] = cellObj;
+		rows[rowName]['cell' + x] = cellObj;
 		var columnName = 'column' + x;
-		columns[columnName]['cell' + x] = cellObj;
+		columns[columnName]['cell' + y] = cellObj;
 		if(diagonalPossible(x, y)) {
 			if(x == 1 && y == 1){
 				diagonals['diagonal1']['cell' + x + y] = cellObj;
@@ -173,6 +172,11 @@ $(function(){
 		} else {
 			//find best solution
 		}
+		if(isWinner()) {
+			var winText = "<div class='alert alert-success'>we have a winner!!!!!</div>"
+			$(winText).prependTo('.board')
+			$('.span1').off('click');
+		};
 	}
 	
 	//plays the next move
