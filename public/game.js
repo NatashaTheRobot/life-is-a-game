@@ -47,7 +47,6 @@ $(function(){
 		for(key in obj) {
 			count ++;
 		}
-		console.log('counting: ' + count)
 		return count;
 	}
 	
@@ -89,7 +88,7 @@ $(function(){
 	function checkBoardsToBlock(elements) {
 		for(element in elements) {
 			if(countCells(elements[element]) === 2){
-				if(checkBlockMatch(element)) {
+				if(checkBlockMatch(elements[element])) {
 					return elements[element];
 				} else {
 					return false;
@@ -203,11 +202,6 @@ $(function(){
 		}	
 	}
 	
-	//future feture: if computer goes first
-	// function isFirstMove() {
-	// 	return jQuery.isEmptyObject(rows.row0) && jQuery.isEmptyObject(rows.row1) && jQuery.isEmptyObject(rows.row2);
-	// }
-	
 	function checkForWin(element) {
 		var contents = [];
 		for(cell in element) {
@@ -216,14 +210,9 @@ $(function(){
 		return (contents[0] === contents[1]) && (contents[1] === COMPUTER);
 	}
 	
-	//ceck 
-	
 	//checks rows, columns, or diagonals for 3 in a row wins
 	function checkBoardsForWin(elements) {
 		for(element in elements) {
-			console.log('in the element')
-			console.log(elements[element])
-			console.log('counting cells: ' + countCells(elements[element]))
 			if(countCells(elements[element]) == 2){
 				if(checkForWin(elements[element])) {
 					return elements[element];
@@ -238,7 +227,6 @@ $(function(){
 	//if there are two O's in a row, computer adds the third one
 	function makeWinningMove(){
 		var winSection = checkBoardsForWin(rows) || checkBoardsForWin(columns) || checkBoardsForWin(diagonals);
-		console.log("there is a win section:" + winSection)
 		if(winSection){
 			var cells = []
 			for(var cell in winSection) {
@@ -419,7 +407,6 @@ $(function(){
 	
 	function makeMove() {
 		var toBlock = checkBoardsToBlock(rows) || checkBoardsToBlock(columns) || checkBoardsToBlock(diagonals);
-		console.log(makeWinningMove())
 		if(!makeWinningMove()){
 			if(toBlock){
 				makeBlockMove(toBlock);
