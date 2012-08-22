@@ -45,8 +45,9 @@ $(function(){
 	function countCells(obj) {
 		var count = 0;
 		for(key in obj) {
-			count += 1;
+			count ++;
 		}
+		console.log('counting: ' + count)
 		return count;
 	}
 	
@@ -61,14 +62,12 @@ $(function(){
 	//checks rows, columns, or diagonals for 3 in a row wins
 	function checkBoardsForWinner(elements) {
 		for(element in elements) {
-			if(!elements[element].hasOwnProperty('winner')){
-				if(countCells(elements[element]) === 3){
-					if(checkCellMatch(elements[element])) {
-						return true;
-					} else {
-						elements[element].winner = false;
-					}
-				}
+			if(countCells(elements[element]) === 3){
+				if(checkCellMatch(elements[element])) {
+					return true;
+				} else {
+					return false;
+				}	
 			}
 		}
 		return false;
@@ -89,13 +88,11 @@ $(function(){
 	//checks rows, columns, or diagonals for 3 in a row wins
 	function checkBoardsToBlock(elements) {
 		for(element in elements) {
-			if(!elements[element].hasOwnProperty('winner') && !elements[element].hasOwnProperty('block')){
-				if(countCells(elements[element]) === 2){
-					if(checkBlockMatch(element)) {
-						return elements[element];
-					} else {
-						elements[element].block = false;
-					}
+			if(countCells(elements[element]) === 2){
+				if(checkBlockMatch(element)) {
+					return elements[element];
+				} else {
+					return false;
 				}
 			}
 		}
@@ -219,16 +216,20 @@ $(function(){
 		return (contents[0] === contents[1]) && (contents[1] === COMPUTER);
 	}
 	
+	//ceck 
+	
 	//checks rows, columns, or diagonals for 3 in a row wins
 	function checkBoardsForWin(elements) {
 		for(element in elements) {
-			if(!elements[element].hasOwnProperty('winner')){
-				if(countCells(elements[element]) === 2){
-					if(checkForWin(elements[element])) {
-						return elements[element];
-					} 
-				}
+			console.log('in the element')
+			console.log(elements[element])
+			console.log('counting cells: ' + countCells(elements[element]))
+			if(countCells(elements[element]) == 2){
+				if(checkForWin(elements[element])) {
+					return elements[element];
+				} 
 			}
+		
 		}
 		return false;
 	}
@@ -237,6 +238,7 @@ $(function(){
 	//if there are two O's in a row, computer adds the third one
 	function makeWinningMove(){
 		var winSection = checkBoardsForWin(rows) || checkBoardsForWin(columns) || checkBoardsForWin(diagonals);
+		console.log("there is a win section:" + winSection)
 		if(winSection){
 			var cells = []
 			for(var cell in winSection) {
@@ -307,9 +309,6 @@ $(function(){
 	
 	function checkForTwoWin(x,y,d){
 		//check if there is a value already there
-		console.log(x)
-		console.log(y)
-		console.log(cellFilled(x,y))
 		if(cellFilled(x,y)){
 			return false;
 		}
@@ -412,9 +411,7 @@ $(function(){
 			addCellToDom(cell);
 		} else if(cell = twoWinCell()){
 			addCellToDom(cell);
-			console.log('two win cell')
 		} else if(cell = oneWinCell()){
-			console.log('one win cell')
 			addCellToDom(cell);
 		}
 		
@@ -422,6 +419,7 @@ $(function(){
 	
 	function makeMove() {
 		var toBlock = checkBoardsToBlock(rows) || checkBoardsToBlock(columns) || checkBoardsToBlock(diagonals);
+		console.log(makeWinningMove())
 		if(!makeWinningMove()){
 			if(toBlock){
 				makeBlockMove(toBlock);
@@ -433,7 +431,7 @@ $(function(){
 			var winText = "<div class='alert alert-success'>Computer wins!!!!!</div>"
 			$(winText).prependTo('.board')
 			$('.span1').off('click');
-		};
+		}
 	}
 	
 	//plays the next move
