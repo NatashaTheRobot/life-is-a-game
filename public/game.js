@@ -245,15 +245,46 @@ $(function(){
 		}
 	}
 	
+	//checks if the given row, column, or diagonal are empty
+	function isEmpty(element) {
+		return jQuery.isEmptyObject(element)
+	}
+	
+	function checkCorner(x,y,d) {
+		//check if there is a value already there
+		for(cell in rows['row' + y]){
+			if(cell.x === x && cell.y === y){
+				return false;
+			}
+		}
+		//check row, columns, diagonals for empty or computer cells
+		var row = rows['row' + y]
+		var column = columns['column' + x]
+		var diagonal = diagonals['diagonal' + d]
+		if(isEmpty(row) && isEmpty(column) && isEmpty(diagonal)){
+			return {x: x, y: y}
+		} else { 
+			return false;
+		}
+	}
+	
 	//the best corner is one with 3 options of winning (row, column, diagonal)
-	function makeBestMove() {
-		//console.log(diagonals[diagonal1])
+	function findBestMove() {
+		var coordinates = checkCorner(0,2,1) || checkCorner(0,0,2) || checkCorner(2,2,2) || checkCorner(2,0,1);
+		if(coordinates){
+			var coordinateId = '#x' + coordinates.x + '-y' + coordinates.y;
+			$(coordinateId).html('o');
+			$(coordinateId).off('click');
+			addCellToBoardsFromCoordinates(coordinates.x, coordinates.y);
+		} else {
+			//find cell with 2 possible winning options - need to check cell contents for computer cell
+		}
 	}
 	
 	//the best move is one that maximizes the chance of winning
 	function makeBestMove() {
 			if(!makeWinningMove()){
-				//makeBestMove();
+				findBestMove();
 			}
 	}
 	
