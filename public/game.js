@@ -373,16 +373,16 @@ $(function(){
 	
 	//finds the first cell with one win path
 	function oneWinCell(){
-		return checkForOneWin(0,2,1) || 
-					 checkForOneWin(0,0,2) || 
-					 checkForOneWin(2,2,2) || 
-					 checkForOneWin(2,0,1) ||
-					 checkForOneWin(1,1,1) ||
-					 checkForOneWin(1,1,2) ||
-					 checkForOneWin(1,2,0) ||
-					 checkForOneWin(0,1,0) ||
-					 checkForOneWin(2,1,0) ||
-					 checkForOneWin(1,0,0);
+		return   checkForOneWin(1,1,1) ||
+		 				 checkForOneWin(1,1,2) ||
+						 checkForOneWin(0,2,1) || 
+						 checkForOneWin(0,0,2) || 
+						 checkForOneWin(2,2,2) || 
+						 checkForOneWin(2,0,1) ||
+						 checkForOneWin(1,2,0) ||
+						 checkForOneWin(0,1,0) ||
+						 checkForOneWin(2,1,0) ||
+						 checkForOneWin(1,0,0);
 	}
 	
 	function addCellToDom(cell){
