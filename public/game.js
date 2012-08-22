@@ -186,7 +186,7 @@ $(function(){
 				}
 			}
 			var coordinates = '#x' + x + '-y' + y;
-			$(coordinates).html('o');
+			$(coordinates).html(COMPUTER);
 			$(coordinates).off('click');
 			addCellToBoardsFromCoordinates(x,y);
 		}
@@ -268,7 +268,7 @@ $(function(){
 		return true;
 	}
 	
-	function checkCornerCell(x,y,d) {
+	function checkForThreeWin(x,y,d) {
 		//check if there is a value already there
 		if(cellFilled(x,y)){
 			return false;
@@ -283,24 +283,81 @@ $(function(){
 																				hasOnlyComputerCells(diagonal);																	
 		if(sectionsEmpty || sectionsHaveOnlyComputerCells){
 			return {x: x, y: y}
-		} else { //if not empty but filled with an o
+		} else {
 			return false;
 		}
 	}
 	
-	//the best corner is one with 3 options of winning (row, column, diagonal)
-	function findBestMove() {
-		var threeWinCell = checkCornerCell(0,2,1) || 
-											 checkCornerCell(0,0,2) || 
-											 checkCornerCell(2,2,2) || 
-											 checkCornerCell(2,0,1);
-		if(threeWinCell){
-			var coordinateId = '#x' + threeWinCell.x + '-y' + threeWinCell.y;
-			$(coordinateId).html('o');
-			$(coordinateId).off('click');
-			addCellToBoardsFromCoordinates(threeWinCell.x, threeWinCell.y);
+	//finds the coordinates of the first cell with 3 possibilities of winning
+	function threeWinCell(){
+		return checkForThreeWin(0,2,1) || 
+					 checkForThreeWin(0,0,2) || 
+					 checkForThreeWin(2,2,2) || 
+					 checkForThreeWin(2,0,1) ||
+					 checkForThreeWin(1,1,1) ||
+					 checkForThreeWin(1,1,2);
+	}
+	
+	function checkForTwoWin(x,y,d){
+		//check if there is a value already there
+		if(cellFilled(x,y)){
+			return false;
+		}
+		//check row, columns, diagonals for empty or computer cells
+		var row = rows['row' + y]
+		var column = columns['column' + x]
+		var sectionsEmpty;
+		var sectionsHaveOnlyComputerCells;
+		if(d !== 0){
+			var diagonal = diagonals['diagonal' + d]
+			sectionsEmpty = (isEmpty(row) && isEmpty(column)) ||
+											(isEmpty(row) && isEmpty(diagonal)) ||
+											(isEmpth(column) && isEmpty(diagonal));
+			sectionsHaveOnlyComputerCells = (hasOnlyComputerCells(row) && hasOnlyComputerCells(column)) ||
+											                (hasOnlyComputerCells(row) && hasOnlyComputerCells(diagonal)) ||
+																			(hasOnlyComputerCells(column) && hasOnlyComputerCells(diagonal));
 		} else {
+			sectionsEmpty = isEmpty(row) && isEmpty(column);
+			sectionsHaveOnlyComputerCells = hasOnlyComputerCells(row) && hasOnlyComputerCells(column);
+		}																
+		if(sectionsEmpty || sectionsHaveOnlyComputerCells){
+			return {x: x, y: y}
+		} else {
+			return false;
+		}
+		
+	}
+	
+	function twoWinCell(){
+		return checkForTwoWin(0,2,1) || 
+					 checkForTwoWin(0,0,2) || 
+					 checkForTwoWin(2,2,2) || 
+					 checkForTwoWin(2,0,1) ||
+					 checkForTwoWin(1,1,1) ||
+					 checkForTwoWin(1,1,2) ||
+					 checkForTwoWin(1,2,0) ||
+					 checkForTwoWin(0,1,0) ||
+					 checkForTwoWin(2,1,0) ||
+					 checkForTwoWin(1,0,0);
+	}
+	
+	function addCellToDom(cell){
+		var coordinateId = '#x' + cell.x + '-y' + cell.y;
+		$(coordinateId).html(COMPUTER);
+		$(coordinateId).off('click');
+		addCellToBoardsFromCoordinates(cell.x, cell.y);
+	}
+	
+	//the best move is one with most options of winning (row, column, diagonal)
+	function findBestMove() {
+		//var oneWinCell;
+		var cell;									
+		if(cell = threeWinCell()){
+			addCellToDom(cell);
+		} else if(cell = twoWinCell()){
 			//find cell with 2 possible winning options - need to check cell contents for computer cell
+		} else {
+			//cell = oneWinCell();
 		}
 	}
 	
@@ -327,7 +384,7 @@ $(function(){
 	
 	//plays the next move
 	function play(cell) {
-		$(cell).html("X");
+		$(cell).html(OPPONENT);
 		$(cell).off('click');
 		addCellToBoards(cell);
 		if(!isWinner()) {
