@@ -81,7 +81,7 @@ $(function(){
 		for(cell in element) {
 			contents.push(element[cell].content);
 		}
-		return contents[0] === contents[1] && contents[1] === OPPONENT;
+		return (contents[0] === contents[1]) && (contents[1] === OPPONENT);
 	}
 	
 	//checks rows, columns, or diagonals for 3 in a row wins
@@ -477,6 +477,10 @@ $(function(){
 			addCellToDom(cell);
 		} else if(cell = oneWinCell()){
 			addCellToDom(cell);
+		} else {
+			var tieText = "<div class='alert'>This is a tie my friend</div>"
+			$(tieText).prependTo('.board')
+			$('.span1').off('click');
 		}
 		
 	}
