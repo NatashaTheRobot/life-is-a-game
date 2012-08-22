@@ -240,6 +240,7 @@ $(function(){
 				cells.push(winSection[cell]);
 			}
 			addLastSectionCell(cells)
+			return true;
 		} else {
 			return false;
 		}
@@ -281,7 +282,7 @@ $(function(){
 		var sectionsHaveOnlyComputerCells = hasOnlyComputerCells(column) && 
 																				hasOnlyComputerCells(row) && 
 																				hasOnlyComputerCells(diagonal);																	
-		if(sectionsEmpty || sectionsHaveOnlyComputerCells){
+		if(sectionsHaveOnlyComputerCells || sectionsEmpty){
 			return {x: x, y: y}
 		} else {
 			return false;
@@ -320,7 +321,7 @@ $(function(){
 			sectionsEmpty = isEmpty(row) && isEmpty(column);
 			sectionsHaveOnlyComputerCells = hasOnlyComputerCells(row) && hasOnlyComputerCells(column);
 		}																
-		if(sectionsEmpty || sectionsHaveOnlyComputerCells){
+		if(sectionsHaveOnlyComputerCells || sectionsEmpty){
 			return {x: x, y: y}
 		} else {
 			return false;
@@ -328,6 +329,7 @@ $(function(){
 		
 	}
 	
+	//finds the first cell with two win paths
 	function twoWinCell(){
 		return checkForTwoWin(0,2,1) || 
 					 checkForTwoWin(0,0,2) || 
@@ -341,6 +343,51 @@ $(function(){
 					 checkForTwoWin(1,0,0);
 	}
 	
+	function checkForOneWin(x,y,d){
+		//check if there is a value already there
+		if(cellFilled(x,y)){
+			return false;
+		}
+		//check row, columns, diagonals for empty or computer cells
+		var row = rows['row' + y]
+		var column = columns['column' + x]
+		var sectionsEmpty;
+		var sectionsHaveOnlyComputerCells;
+		if(d !== 0){
+			var diagonal = diagonals['diagonal' + d];
+			sectionsEmpty = isEmpty(row) || 
+											isEmpty(column) || 
+											isEmpty(diagonal);
+			sectionsHaveOnlyComputerCells = hasOnlyComputerCells(row) || 
+																			hasOnlyComputerCells(column) ||
+											                hasOnlyComputerCells(diagonal);
+		} else {
+			sectionsEmpty = isEmpty(row) || isEmpty(column);
+			sectionsHaveOnlyComputerCells = hasOnlyComputerCells(row) || hasOnlyComputerCells(column);
+		}																
+		if(sectionsHaveOnlyComputerCells || sectionsEmpty){
+			return {x: x, y: y}
+		} else {
+			return false;
+		}
+		
+	}
+	
+	
+	//finds the first cell with one win path
+	function oneWinCell(){
+		return checkForOneWin(0,2,1) || 
+					 checkForOneWin(0,0,2) || 
+					 checkForOneWin(2,2,2) || 
+					 checkForOneWin(2,0,1) ||
+					 checkForOneWin(1,1,1) ||
+					 checkForOneWin(1,1,2) ||
+					 checkForOneWin(1,2,0) ||
+					 checkForOneWin(0,1,0) ||
+					 checkForOneWin(2,1,0) ||
+					 checkForOneWin(1,0,0);
+	}
+	
 	function addCellToDom(cell){
 		var coordinateId = '#x' + cell.x + '-y' + cell.y;
 		$(coordinateId).html(COMPUTER);
@@ -348,33 +395,28 @@ $(function(){
 		addCellToBoardsFromCoordinates(cell.x, cell.y);
 	}
 	
-	//the best move is one with most options of winning (row, column, diagonal)
-	function findBestMove() {
-		//var oneWinCell;
+	//the best move is one that maximizes the chance of winning
+	function makeBestMove() {
 		var cell;									
 		if(cell = threeWinCell()){
 			addCellToDom(cell);
 		} else if(cell = twoWinCell()){
-			//find cell with 2 possible winning options - need to check cell contents for computer cell
-		} else {
-			//cell = oneWinCell();
+			addCellToDom(cell);
+		} else if(cell = oneWinCell()){
+			addCellToDom(cell);
 		}
-	}
-	
-	//the best move is one that maximizes the chance of winning
-	function makeBestMove() {
-			if(!makeWinningMove()){
-				findBestMove();
-			}
+		
 	}
 	
 	function makeMove() {
 		var toBlock = checkBoardsToBlock(rows) || checkBoardsToBlock(columns) || checkBoardsToBlock(diagonals);
-		if(toBlock){
-			makeBlockMove(toBlock);
-		} else {
-			makeBestMove();
-		}
+		if(!makeWinningMove()){
+			if(toBlock){
+				makeBlockMove(toBlock);
+			}	else {
+				makeBestMove();
+			}
+		}	
 		if(isWinner()) {
 			var winText = "<div class='alert alert-success'>Computer wins!!!!!</div>"
 			$(winText).prependTo('.board')
