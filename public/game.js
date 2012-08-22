@@ -287,12 +287,11 @@ $(function(){
 	
 	//finds the coordinates of the first cell with 3 possibilities of winning
 	function threeWinCell(){
-		return checkForThreeWin(0,2,1) || 
+		return checkForMiddleWinThree() ||
+					 checkForThreeWin(0,2,1) || 
 					 checkForThreeWin(0,0,2) || 
 					 checkForThreeWin(2,2,2) || 
-					 checkForThreeWin(2,0,1) ||
-					 checkForThreeWin(1,1,1) ||
-					 checkForThreeWin(1,1,2);
+					 checkForThreeWin(2,0,1);
 	}
 	
 	function checkForTwoWin(x,y,d){
@@ -328,12 +327,11 @@ $(function(){
 	
 	//finds the first cell with two win paths
 	function twoWinCell(){
-		return checkForTwoWin(0,2,1) || 
+		return checkForMiddleTwoWin()
+					 checkForTwoWin(0,2,1) || 
 					 checkForTwoWin(0,0,2) || 
 					 checkForTwoWin(2,2,2) || 
 					 checkForTwoWin(2,0,1) ||
-					 checkForTwoWin(1,1,1) ||
-					 checkForTwoWin(1,1,2) ||
 					 checkForTwoWin(1,2,0) ||
 					 checkForTwoWin(0,1,0) ||
 					 checkForTwoWin(2,1,0) ||
@@ -370,11 +368,91 @@ $(function(){
 		
 	}
 	
+	function checkForMiddleWinThree(){
+		if(cellFilled(1,1)){
+			return false;
+		}
+		var row = rows['row1'];
+		var column = columns['column1'];
+		var diagonal1 = diagonals['diagonal1'];
+		var diagonal2 = diagonals['diagonal2'];
+		var sectionsEmpty = (isEmpty(row) && isEmpty(column) && isEmpty(diagonal1)) ||
+												(isEmpty(row) && isEmpty(column) && isEmpty(diagonal2))	||
+												(isEmpty(row) && isEmpty(diagonal1) && isEmpty(diagonal2)) ||
+												(isEmpty(column) && isEmpty(diagonal1) && isEmpty(diagonal2));
+		var sectionsHaveOnlyComputerCells = (hasOnlyComputerCells(column) && 
+																				hasOnlyComputerCells(row) && 
+																				hasOnlyComputerCells(diagonal1)) ||
+																				(hasOnlyComputerCells(column) && 
+																				hasOnlyComputerCells(row) && 
+																				hasOnlyComputerCells(diagonal2)) ||
+																				(hasOnlyComputerCells(row) && 
+																				hasOnlyComputerCells(diagonal1) && 
+																				hasOnlyComputerCells(diagonal2)) ||
+																				(hasOnlyComputerCells(column) && 
+																				hasOnlyComputerCells(diagonal1) && 
+																				hasOnlyComputerCells(diagonal2));																	
+		if(sectionsHaveOnlyComputerCells || sectionsEmpty){
+			return {x: 1, y: 1}
+		} else {
+			return false;
+		}
+		
+	}
+	
+	function checkForMiddleTwoWin(){
+		if(cellFilled(1,1)){
+			return false;
+		}
+		var row = rows['row1'];
+		var column = columns['column1'];
+		var diagonal1 = diagonals['diagonal1'];
+		var diagonal2 = diagonals['diagonal2'];
+		
+		var sectionsEmpty = (isEmpty(row) && isEmpty(column)) ||
+										(isEmpty(row) && isEmpty(diagonal1)) ||
+										(isEmpty(column) && isEmpty(diagonal1)) ||
+										(isEmpty(row) && isEmpty(diagonal2)) ||
+										(isEmpty(column) && isEmpty(diagonal2));
+		var sectionsHaveOnlyComputerCells = (hasOnlyComputerCells(row) && hasOnlyComputerCells(column)) ||
+										                (hasOnlyComputerCells(row) && hasOnlyComputerCells(diagonal1)) ||
+																		(hasOnlyComputerCells(column) && hasOnlyComputerCells(diagonal1)) ||
+																		(hasOnlyComputerCells(row) && hasOnlyComputerCells(diagonal1)) ||
+																		(hasOnlyComputerCells(column) && hasOnlyComputerCells(diagonal1));																
+		if(sectionsHaveOnlyComputerCells || sectionsEmpty){
+			return {x: 1, y: 1}
+		} else {
+			return false;
+		}
+		
+	}
+	
+	function checkForMiddleOneWin(){
+		if(cellFilled(1,1)){
+			return false;
+		}
+		var row = rows['row1'];
+		var column = columns['column1'];
+		var diagonal1 = diagonals['diagonal1'];
+		var diagonal2 = diagonals['diagonal2'];
+		
+		var sectionsEmpty = isEmpty(row) || isEmpty(column) ||
+										    isEmpty(diagonal1) || isEmpty(diagonal2);
+		var sectionsHaveOnlyComputerCells = 	hasOnlyComputerCells(row) || 
+																					hasOnlyComputerCells(diagonal1) ||
+																					hasOnlyComputerCells(column) ||
+																					hasOnlyComputerCells(diagonal2);																
+		if(sectionsHaveOnlyComputerCells || sectionsEmpty){
+			return {x: 1, y: 1}
+		} else {
+			return false;
+		}
+		
+	}
 	
 	//finds the first cell with one win path
 	function oneWinCell(){
-		return   checkForOneWin(1,1,1) ||
-		 				 checkForOneWin(1,1,2) ||
+		return   checkForMiddleOneWin()||
 						 checkForOneWin(0,2,1) || 
 						 checkForOneWin(0,0,2) || 
 						 checkForOneWin(2,2,2) || 
