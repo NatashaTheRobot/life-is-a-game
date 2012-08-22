@@ -159,21 +159,69 @@ $(function(){
 			addCellToBoardsFromCoordinates(x,cells[0].y);
 			
 		} else { //same diagonal
-			alert('same diagonal')
+			var x, y; 
+			if((cells[0].x === 0 && cells[0].y === 0) || (cells[1].x === 2 && cells[1].y === 2)) {
+				var sum = cells[0].x + cells[0].y + cells[1].x + cells[1].y;	
+				if(sum === 6) {
+					x = 0;
+					y = 0;
+				} else if(sum === 4) {
+					x = 1;
+					y = 1;
+				} else {
+					x = 2;
+					y = 2;
+				}
+			} else {
+				var sumXs = cells[0].x + cells[1].x;
+				var sumYs = cells[0].y + cells[1].y;
+				if(sumXs === 3 && sumYs === 1) {
+					x = 0;
+					y = 2;
+				} else if(sumXs === 1 && sumYs === 3) {
+					x = 2;
+					y = 0;
+				} else {
+					x = 1;
+					y = 1;
+				}
+			}
+			var coordinates = '#x' + x + '-y' + y;
+			$(coordinates).html('o');
+			$(coordinates).off('click');
+			addCellToBoardsFromCoordinates(x,y);
 		}
 	}
 	
+	function isFirstMove() {
+		return jQuery.isEmptyObject(rows.row0) && jQuery.isEmptyObject(rows.row1) && jQuery.isEmptyObject(rows.row12);
+	}
+	
+	//the best corner is one with 3 options of winning (row, column, diagonal)
+	function findBestCorner() {
+		
+	}
+	
+	//the best move is one that maximizes the chance of winning
+	function makeBestMove() {
+		if(isFirstMove()){
+			$('#x1-y1').html('o');
+			$('#x1-y1').off('click');
+			addCellToBoardsFromCoordinates(1, 1);
+		} else {
+			findBestCorner();
+		}
+	}
 	
 	function makeMove() {
 		var toBlock = checkBoardsToBlock(rows) || checkBoardsToBlock(columns) || checkBoardsToBlock(diagonals);
 		if(toBlock){
-			makeBlockMove(toBlock)
-			//add O to the board at correct coordinate spot
+			makeBlockMove(toBlock);
 		} else {
-			//find best solution
+			makeBestMove();
 		}
 		if(isWinner()) {
-			var winText = "<div class='alert alert-success'>we have a winner!!!!!</div>"
+			var winText = "<div class='alert alert-success'>Computer wins!!!!!</div>"
 			$(winText).prependTo('.board')
 			$('.span1').off('click');
 		};
@@ -187,7 +235,7 @@ $(function(){
 		if(!isWinner()) {
 			makeMove();
 		} else {
-			var winText = "<div class='alert alert-success'>we have a winner!!!!!</div>"
+			var winText = "<div class='alert alert-success'>You beat the computer!!!!!</div>"
 			$(winText).prependTo('.board')
 			$('.span1').off('click');
 		}
