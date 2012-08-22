@@ -2,7 +2,6 @@ $(function(){
 	var COMPUTER = 'o'; //computer is Os
 	var OPPONENT = 'x'; //opponent is Xs
 	
-	var cells = {}; // all cells
 	var rows = {row0: {}, row1: {}, row2: {}}; // cells in rows
 	var columns = {column0: {}, column1: {}, column2: {}}; //cells in columns
 	var diagonals = {diagonal1: {}, diagonal2: {}}; //cells in diagonals
@@ -23,26 +22,23 @@ $(function(){
 	
 	//adds a cell object to the boards
 	function addCellToBoards(cell) {
-		var cellName = cell.attr('id');
-		var id = numFromWord(cellName);
-		var coordinates = cell.attr('coordinates').split('-');
+		var coordinates = cell.attr('id').split('-');
 		var x = numFromWord(coordinates[0]);
 		var y = numFromWord(coordinates[1]);
-		cells.cellName = {id: id, x: x, y: y, content: OPPONENT};
+		var cellObj = {x: x, y: y, content: OPPONENT};
 		var rowName = 'row' + y;
-		rows[rowName][cellName] = cells.cellName;
-		//rows[rowName].count === undefined ? rows[rowName].count = 1 : rows[rowName].count ++;
+		rows[rowName][cell + x] = cellObj;
+		console.log(rows[rowName][cell + x])
 		var columnName = 'column' + x;
-		columns[columnName][cellName] = cells.cellName;
-		//columns[columnName].count === undefined ? columns[columnName].count = 1 : columns[columnName].count ++;
+		columns[columnName][cell + y] = cellObj;
 		if(diagonalPossible(x, y)) {
 			if(x == 1 && y == 1){
-				diagonals['diagonal1'][cellName] = cells.cellName;
-				diagonals['diagonal2'][cellName] = cells.cellName;
+				diagonals['diagonal1'][cell + x] = cellObj;
+				diagonals['diagonal2'][cell + y] = cellObj;
 			} else if ((x === 0 && y === 2) || (x === 2 && y === 0)) {
-				diagonals['diagonal1'][cellName] = cells.cellName;
+				diagonals['diagonal1'][cell + x] = cellObj;
 			} else {
-				diagonals['diagonal2'][cellName] = cells.cellName;
+				diagonals['diagonal2'][cell + y] = cellObj;
 			}
 		}
 	}
@@ -128,10 +124,8 @@ $(function(){
 			} else {
 				y = 2;
 			}
-			var coordinates = 'x' + cells[0].x + '-y' + y;
-			var coordinateSelector = "coordinates['" + coordinates + "']" 
-			console.log(coordinateSelector)
-			$(coordinateSelector).html('o')
+			var coordinates = '#x' + cells[0].x + '-y' + y;
+			$(coordinates).html('o')
 		} else if(cells[0].y === cells[1].y) { //same row
 			alert('same row')
 		} else { //same diagonal
