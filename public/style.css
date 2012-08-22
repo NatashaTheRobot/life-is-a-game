@@ -1,0 +1,31 @@
+h1{
+	text-align: center;
+}
+
+.board{
+	margin: 30px;
+	margin-left: 380px;
+}
+
+.span1 {
+	text-align: center;
+	margin: 0px;
+	padding: 30px;
+	font-size: 20px;
+	width: 75px;
+	height: 75px;
+}
+
+#x0-y2, #x1-y2, #x0-y1, #x1-y1 {
+	border-bottom: 1px solid;
+	border-right: 1px solid;
+}
+
+#x2-y2, #x2-y1 {
+	border-bottom: 1px solid;
+}
+
+#x0-y0, #x1-y0 {
+	border-right: 1px solid;
+}
+
